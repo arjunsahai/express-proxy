@@ -1,8 +1,13 @@
 const express = require("express");
 const request = require('request');
+const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3001;
 
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
+
+// Middleware to set CORS headers
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
@@ -10,20 +15,32 @@ app.use((req, res, next) => {
   next();
 });
 
-
+// Proxy endpoint
 app.post('/proxy', (req, res) => {
   const url = 'https://app.withsurface.com/api/v1/responses';
+
+  // Log the request body to ensure it is correctly parsed
+  console.log('Request body:', req.body);
+
   request.post({
     url: url,
     json: req.body,
     headers: {
       'Content-Type': 'application/json'
     }
-  }).pipe(res);
+  }, (error, response, body) => {
+    if (error) {
+      console.error('Error:', error);
+      res.status(500).send('Internal Server Error');
+    } else {
+      res.status(response.statusCode).send(body);
+    }
+  });
 });
 
-app.get("/", (req, res) => res.type('html').send(html));
 
+
+app.get("/", (req, res) => res.type('html').send(html));
 
 
 
