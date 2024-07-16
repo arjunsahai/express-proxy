@@ -16,19 +16,21 @@ app.use((req, res, next) => {
 });
 
 // Proxy endpoint
-app.post('/proxy', (req, res) => {
+app.all('/proxy', (req, res) => {
   const url = 'https://app.withsurface.com/api/v1/responses';
-
-  // Log the request body to ensure it is correctly parsed
-  console.log('Request body:', req.body);
-
-  request.post({
+  const options = {
     url: url,
+    method: req.method,
     json: req.body,
     headers: {
       'Content-Type': 'application/json'
     }
-  }, (error, response, body) => {
+  };
+
+  console.log(`${req.method} request to ${url}`);
+  console.log('Request body:', req.body);
+
+  request(options, (error, response, body) => {
     if (error) {
       console.error('Error:', error);
       res.status(500).send('Internal Server Error');
@@ -37,8 +39,6 @@ app.post('/proxy', (req, res) => {
     }
   });
 });
-
-
 
 app.get("/", (req, res) => res.type('html').send(html));
 
