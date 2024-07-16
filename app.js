@@ -1,8 +1,24 @@
 const express = require("express");
+const request = require('request');
 const app = express();
 const port = process.env.PORT || 3001;
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  next();
+});
+
+app.post('/proxy', (req, res) => {
+  const url = 'https://app.withsurface.com/api/v1/responses';
+  req.pipe(request(url)).pipe(res);
+});
+
 app.get("/", (req, res) => res.type('html').send(html));
+
+
+
 
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
