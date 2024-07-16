@@ -94,7 +94,7 @@ const html = `
   </head>
   <body>
     <section>
-      Hello from Render!
+      Hey Saharsh, good luck on the demo!
     </section>
   </body>
 </html>
