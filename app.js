@@ -10,9 +10,16 @@ app.use((req, res, next) => {
   next();
 });
 
+
 app.post('/proxy', (req, res) => {
   const url = 'https://app.withsurface.com/api/v1/responses';
-  req.pipe(request(url)).pipe(res);
+  request.post({
+    url: url,
+    json: req.body,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).pipe(res);
 });
 
 app.get("/", (req, res) => res.type('html').send(html));
